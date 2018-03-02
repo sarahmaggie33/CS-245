@@ -1,0 +1,4 @@
+Total payroll: $3502.3076923076924
+UWECStudent = uwecId: 1, name: Joe Student, title: Sophomore, credits: 24, gpa: 3.9
+UWECStaff = uwecId: 3, name: Joe Staff, title: Custodian, hourly pay: 13.5, hours/week: 30.0
+UWECFaculty = uwecId: 5, name: Joe Faculty, title: Associate Professor, credits: 239, yearlySalary: 70000.0
