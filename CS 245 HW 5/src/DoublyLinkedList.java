@@ -15,48 +15,40 @@ public class DoublyLinkedList<E> {
 		}
 	}
 	
-	public static void main(String[] args) {
-		DoublyLinkedList<String> dll = new DoublyLinkedList<String>();
-		dll.add("dog");
-		dll.add("pig");
-		dll.add("cat");
+//	public static void main(String[] args) {
+//		DoublyLinkedList<String> dll = new DoublyLinkedList<String>();
+//		dll.add("dog");
+//		dll.add("pig");
+//		dll.add("cat");
+//		dll.add(1, "frog");
 //		System.out.println(dll.get(0));
 //		System.out.println(dll.get(1));
 //		System.out.println(dll.get(2));
+//		System.out.println(dll.get(3));
 //		System.out.println(dll.indexOf("dog"));
 //		System.out.println(dll.indexOf("pig"));
 //		System.out.println(dll.indexOf("cat"));
+//		System.out.println(dll.indexOf("frog"));
 //		dll.remove(1);
 //		dll.remove(0);
-
-		System.out.println(dll.size());
-		System.out.println(dll.toString());
-	}
+//
+//		System.out.println(dll.size());
+//		System.out.println(dll.toString());
+//	}
 	
 	public void add(E value) {
 //		if the list is empty, the new node is also the first node
 		if (first == null) {
-			first = new Node(value, first, first);
-
-			size = 1;
+			first = new Node(value, null, null);
+			first.next = first;
+			first.prev = first;
 //		The value should be placed after the last node in the list
 		} else {
-			Node f = first;
-			Node current = first;
-//			step through the list, making each non-null node the current node
-			while(current.next != null) {
-				current = current.next;
-			}
-//			end this when there is a null next node
-//			the previous node is now the current node
-//			the current node is after the previously current node
-//			the current node has the value of value
-//			current.next = new Node(value, first, current.prev);
-			Node newNode = new Node(value, f, current.prev);
-			current.next = newNode;
-			current.prev = current;
-			size++;
+			Node newNode = new Node(value, first, first.prev);
+			first.prev.next = newNode;
+			first.prev = newNode;
 		}
+		size++;
 		
 	}
 	
@@ -65,24 +57,27 @@ public class DoublyLinkedList<E> {
 		if (index > size || index < 0) {
 			throw new IndexOutOfBoundsException();
 //		if the list is empty, the new node is also the first node
+		} else if (first == null && index == 0) {
+			first = new Node(value, null, null);
+			first.next = first;
+			first.prev = first;
+			size++;
 		} else if (index == 0) {
-			first = new Node(value, first, first);
+			Node newNode = new Node(value, first, first.prev);
+			first.prev.next = newNode;
+			first.prev = newNode;
+			first = newNode;
 			size++;
 //		The value should be placed at the specific index in the list
 		} else {
-//			Start at the beginning of the list and step through until reaching the index
 			Node current = first;
-			for (int ii = 0; ii < index - 1; ii++) {
+			for(int i = 0; i < index - 1; i++) {
 				current = current.next;
-				size++;
 			}
-			Node previous = current.prev;
-			previous.next = 
-//			the current node is after the index before the specified index
-//			the previously current node is now the previous node
-//			the current node has the value of value
-			current.next = new Node(value, current.next, current);
-			current.prev = current;
+			Node newNode = new Node(value, current.next, current);
+			current.next.prev = newNode;
+			current.next = newNode;
+			size++;
 		}
 		
 	}
@@ -92,17 +87,18 @@ public class DoublyLinkedList<E> {
 		if (first == null || index >= size || index < 0) {
 			throw new IndexOutOfBoundsException();
 //		There is only one element in the list
-		} else if (index == 0 && size == 1) {
-			first = null;
+		} else if (index == 0) {
+			first.next.prev = first.prev;
+			first.prev.next = first.next;	
+			first = first.next;
 			size--;
 		} else {
-//			the second node is now the first node... and so forth
 			Node current = first;
 			for (int ii = 0; ii < index - 1; ii++) {
 				current = current.next;
 			}
 			current.next = current.next.next;
-			current.prev = current.prev.prev;
+			current.next.prev = current;
 			size--;
 		}
 		
