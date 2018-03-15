@@ -28,7 +28,6 @@ public class DoublyLinkedList<E> {
 			first.prev = newNode;
 		}
 		size++;
-		
 	}
 	
 	public void add(int index, E value) {
