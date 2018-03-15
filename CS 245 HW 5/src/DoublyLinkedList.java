@@ -15,27 +15,6 @@ public class DoublyLinkedList<E> {
 		}
 	}
 	
-//	public static void main(String[] args) {
-//		DoublyLinkedList<String> dll = new DoublyLinkedList<String>();
-//		dll.add("dog");
-//		dll.add("pig");
-//		dll.add("cat");
-//		dll.add(1, "frog");
-//		System.out.println(dll.get(0));
-//		System.out.println(dll.get(1));
-//		System.out.println(dll.get(2));
-//		System.out.println(dll.get(3));
-//		System.out.println(dll.indexOf("dog"));
-//		System.out.println(dll.indexOf("pig"));
-//		System.out.println(dll.indexOf("cat"));
-//		System.out.println(dll.indexOf("frog"));
-//		dll.remove(1);
-//		dll.remove(0);
-//
-//		System.out.println(dll.size());
-//		System.out.println(dll.toString());
-//	}
-	
 	public void add(E value) {
 //		if the list is empty, the new node is also the first node
 		if (first == null) {
@@ -165,6 +144,5 @@ public class DoublyLinkedList<E> {
 		output += "]";
 		return output;
 	}
-	
 	
 }
