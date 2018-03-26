@@ -1,8 +1,5 @@
-import DoublyLinkedList.Node;
-
 // non-cylic, ordered, singly-linked list data structure
 // method implementations will use recursion rather than iteration
-
 
 public class SortedLinkedList<E extends Comparable<E>> {
 //	 points to the first node in the list
@@ -23,83 +20,100 @@ public class SortedLinkedList<E extends Comparable<E>> {
 	
 	
 	public static void main(String[] args) {
-		SortedLinkedList<String> list = new SortedLinkedList<String>();
-		list.add("a");
-		list.add("ab");
+		SortedLinkedList<Integer> list = new SortedLinkedList<Integer>();
+		list.add(1);
+		list.add(5);
+		list.add(3);
+		list.add(0);
+		System.out.println(list.get(1));
+		System.out.println(list.size());
+		System.out.println(list.toString());
+		list.remove(3);
+		list.remove(0);
+		System.out.println(list.get(0));
 		System.out.println(list.toString());
 	}
 	
 	
 	public void add(E value) {
-		
-//		Base case: size == 0, create first node
-		if (size == 0 && first == null) {
+//		Special case: size == 0, create first node
+		if (size == 0) {
 			first = new Node(value, null);
-			first.next = first;
+			first.next = null;
+		} else if (value.compareTo(first.data) < 1) {
+			first = new Node(value, first);
 //		Recursive case: add the elements in proper order
 		} else {
-			Node current = first;
-			for(int ii = 0; ii < size; ii++) {
-				add(value, current);
-				current = current.next;
-			}
+			add(value, first);
 		}
 		size++;
 	}
 	
 	private void add(E value, Node n) {
-		Node newNode = new Node(value, null);
-//		new value is before this node n
-		if (value.compareTo(n.data) == -1) {
-			newNode.next = n;
-			if (n.data.compareTo(first.data) == 0) {
-				first = newNode;
-				first.next = n;
-			}	
-			
-//		value is = this node	
-		} else if (value.compareTo(n.data) == 0) {			
-			newNode.next = n;
-			
-//		value is after this node		
-		} else if (value.compareTo(n.data) == 1) {
-			n.next = newNode;
+//		new node is the last in the list
+		if (n.next == null) {
+			n.next = new Node(value, null);
 		}
+//		if the next one in the list is bigger than the one you have
+//		new value is after this node n and before n.next
+		else if (n.next.data.compareTo(value) > 0) {
+			n.next = new Node(value, n.next);
+		
+//		new value is after this node
+		} else {
+			n = n.next;
+			add(value, n);
+		}
+	
 	}
 	
 	
 	public void remove(int index) {
+		int currentIndex = 0;
 //		invalid index parameter
-		if (index > 0 || index >= size || first == null) {
+		if (index < 0 || index >= size || first == null) {
 			throw new IndexOutOfBoundsException();
-//		Base case: index == 0
 		} else if (index == 0) {
-			first.next = null;
+			first = first.next;
 			size--;
 		} else {
-//			remove(index, currentIndex, node); 
+			remove(index, currentIndex, first); 
 			size--;
 		}	
 	}
 	
 	private void remove(int index, int currentIndex, Node n) {
-
-	
+//		remove end of the list
+		if (index - 1 == currentIndex && n.next.next == null) {
+			n.next = null;
+//		remove middle of the list
+		} else if (index - 1 == currentIndex) {
+			n.next = n.next.next;
+		} else {
+			currentIndex++;
+			n = n.next;
+			remove(index, currentIndex, n);	
+		}
 	}
 	
-	
 	public E get(int index) {
+		int currentIndex = 0;
+		Node current = first;
 //		The index parameter is invalid
 		if (index < 0 || index > size) {
 			throw new IndexOutOfBoundsException();
+		} else {
+			return get(index, currentIndex, current);
 		} 
-		return null;
-		
 	}
 	
 	private E get(int index, int currentIndex, Node n) {
-		return null;
-		
+		if(index == currentIndex) {
+			return n.data;
+		}
+		currentIndex++;	
+		n = n.next;
+		return get(index, currentIndex, n);
 	}
 	
 	
@@ -110,22 +124,21 @@ public class SortedLinkedList<E extends Comparable<E>> {
 		if (current.data == value) {
 			return currentIndex;
 		} else {
-			for (int ii = 0; ii < size; ii++) {
-				indexOf(value, currentIndex, current);
-			}
+			return indexOf(value, currentIndex, current);
 		}
 //		element is not found in the list
-		return -1;
 	}
 	
 	private int indexOf(E value, int currentIndex, Node n) {
-		n = n.next;
-		if (n.data == value) {
+		if (n.data.compareTo(value) > 0) {
+			return -1;
+		} else if (n.data == value) {
 			return currentIndex;
-		}
-		return currentIndex;
-
+		} 
+		n = n.next;
+		currentIndex++;
 		
+		return indexOf(value, currentIndex, n);
 	}
 	
 	
@@ -140,28 +153,17 @@ public class SortedLinkedList<E extends Comparable<E>> {
 	
 	
 	public String toString() {
-		Node current = first;
-		String s = "[";
-//		base case: nothing in list: print just brackets
-		if (current == null) {
-			return s += "]";
-//		recursive case: 	
-		} else {
-			for (int ii = 0; ii < size - 1; ii++) {
-				s += toString(current);
-				current = current.next;
-			}
-			return s + current.data + "]";
-		}
-		
+		return "[" + toString(first) + "]";
 	}
 	
 	private String toString(Node n) {
-		String s = "";
-		if (n != null) {
-			s += n.data + ", ";
+		if (n == null) {
+			return "";
+		} else if (n.next == null) {
+			return n.data + toString(n.next);
+		} else {
+			return n.data + ", " + toString(n.next);
 		}
-		return s;
 	}
 	
 }
