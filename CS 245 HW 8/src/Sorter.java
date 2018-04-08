@@ -26,7 +26,8 @@ public class Sorter extends JFrame {
 	private JTextArea center;
 	private static JButton sort; 
 	private static JLabel label;
-	private String sortType;
+	private String sortType = "select";
+	private static Sorter s;
 
 	
 	public static final String SELECTION_SORT_TEXT = "Selection Sort";
@@ -40,6 +41,7 @@ public class Sorter extends JFrame {
 	    setLayout(new BorderLayout());
 		createContents();
 	    setVisible(true);
+
 	}
 	
 	private void createContents() {
@@ -84,43 +86,55 @@ public class Sorter extends JFrame {
 			JComboBox combo = (JComboBox)e.getSource();
 			String selection = (String)combo.getSelectedItem();
 			if (selection.equals("Merge Sort")) {
+				center.setText("");
+//				System.out.println("merge");
 				sortType = "merge"; 
 			} else if (selection.equals("Insertion Sort")) {
+				center.setText("");
+//				System.out.println("insertion");
 				sortType = "insertion";
-				System.out.println("selected insertion");
 			} else if (selection.equals("Selection Sort")) {
+				center.setText("");
+//				System.out.println("select");
 				sortType = "select";
 			}
+
 		}
 	}
 	private class SortButtonListener implements ActionListener {
 		private int[] arr;
 		private SorterRunnable sr;
+		private int num;
 		
 		
 		public void actionPerformed(ActionEvent e) {
+			ExecutorService es = Executors.newSingleThreadExecutor();
 			int[] n = {1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000, 256000};
 			for (int ii = 0; ii < n.length; ii++) {
 				arr = new int[n[ii]];
 				fillArr();
-			}
-			ExecutorService es = Executors.newSingleThreadExecutor();
-//			es.execute();
-			//TODO: Finish Implementation
-			if (e.getActionCommand().contains("Sort")) {
-				// disable JComboBox and sort button
-				dropdown.setEnabled(false);
-				sort.setEnabled(false);
-				// show the loading gif
-//				sr.sort(sortType, arr);
-				 System.out.println(System.getProperty("java.home"));
-				label.setVisible(true);	
-				center.setText("N\t\tRuntime (ms)");
-
-			}
+				num = n[ii];
 			
+//			num = 1000;
+//			arr = new int[1000];
+//			fillArr();
+			
+		
+			sr = new SorterRunnable(sortType, arr, num, s);
+				if (e.getActionCommand().contains("Sort")) {
+					// disable JComboBox and sort button
+					dropdown.setEnabled(false);
+					sort.setEnabled(false);
+					center.setText("N\t\tRuntime (ms)");
+					// show the loading gif
+					label.setVisible(true);	
+					es.execute(sr);
+				}
+			}
 			es.shutdown();
-	    }
+			
+			}
+	    
 		
 		private void fillArr() {
 			Random r = new Random();
@@ -131,10 +145,18 @@ public class Sorter extends JFrame {
 	}
 	
 	public synchronized void displayResult(int n, long runtime) {
-		//TODO: Implement
+		String newText = center.getText() + "\n" + n +"\t\t" + runtime;
+		center.setText(newText);
+		System.out.println("display result has been called");
+	}
+	
+	public void refreshDisplay() {
+		dropdown.setEnabled(true);
+		sort.setEnabled(true);
+		label.setVisible(false);	
 	}
 	
 	public static void main(String[] args) {
-		new Sorter();
+		s = new Sorter();
 	}
 }
