@@ -147,7 +147,6 @@ public class Sorter extends JFrame {
 	public synchronized void displayResult(int n, long runtime) {
 		String newText = center.getText() + "\n" + n +"\t\t" + runtime;
 		center.setText(newText);
-		System.out.println("display result has been called");
 	}
 	
 	public void refreshDisplay() {

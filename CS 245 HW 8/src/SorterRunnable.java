@@ -38,9 +38,7 @@ public class SorterRunnable implements Runnable {
 		public void run() {
 			finalTime = endTime - startTime;
 			//call Sorter's displayResult method here
-			
 			s.displayResult(n, finalTime);
-			System.out.println(n + "  " +  finalTime);
 			if (n == 256000) {
 				s.refreshDisplay();
 		    }
