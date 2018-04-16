@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -8,11 +9,15 @@ public class BinarySearchTree<E extends Comparable<E>> {
     // post: constructs an empty search tree
     public BinarySearchTree() {
         root = null;
+        numElements = 0;
     }
 
     // post: value added to tree so as to preserve binary search tree
     public void add(E value) {
-        root = add(root, value);
+    	if (!contains(value)) {
+    		root = add(root, value);
+    		numElements++;
+    	}
     }
 
     // post: value added to tree so as to preserve binary search tree
@@ -23,6 +28,8 @@ public class BinarySearchTree<E extends Comparable<E>> {
             node.left = add(node.left, value);
         } else if (node.data.compareTo(value) < 0) {
             node.right = add(node.right, value);
+        } else if (node.data.compareTo(value) == 0) {
+        	return null;
         }
         return node;
     }
@@ -51,67 +58,121 @@ public class BinarySearchTree<E extends Comparable<E>> {
     
     
     public void remove (E value) {
-    	
+    	if (contains(value)) {
+    		root = remove(root, value);
+    		numElements--;
+    	}
     }
 
     private BSTNode<E> remove(BSTNode<E> node, E value) {
-		return node;
-    	
+    	// a leaf
+    	if (node == null) {
+    		return null;
+    	// current node is bigger than desired value
+    	} else if (node.data.compareTo(value) > 0) {
+    		node.left = remove(node.left, value);
+        // current node is smaller than desired value
+    	} else if (node.data.compareTo(value) < 0) {
+        	node.right = remove(node.right, value);        
+    	} else { // node.data == value; remove this node
+    		if (node.right == null) {
+    			return node.left; // no R child; replace w/ L
+    		} else if (node.left == null) {
+    			return node.right; // no L child; replace w/ R
+    		} else {
+    			//both children; replace w/ max from L
+    			node.data = getMax(node.left);
+    			node.left = remove(node.left, node.data);
+    		}
+    	}
+         return node;    	
     }
     
     
     public void clear() {
-    	
+    	root = null;
+    	numElements = 0;
     }
     
     
     public boolean isEmpty() {
-		return false;
-    	
+    	return numElements == 0;
     }
     
     
     public int size() {
-    	return -1;
+    	return numElements;
     }
     
     
-    public E[] toArray() {
-		return null;
-    	
+    @SuppressWarnings("unchecked")
+	public E[] toArray() {
+    	List<E> aList = new ArrayList<E>();
+    	toArray(root, aList);
+    	E[] array = (E[]) new Comparable[numElements];
+    	array = aList.toArray(array);
+		return array;
     }
     
     private void toArray(BSTNode<E> node, List<E> aList) {
+    	if (node == null) {
+    		return;
+    	}
+    	toArray(node.left, aList);
+    	aList.add(node.data);
+    	toArray(node.right, aList);
     	
     }
     
     public Iterator<E> iterator() {
-		return null;
+    	Iterator<E> iterator = new Iterator<E>(root);
+		return iterator;
+    }
+    
+    
+    private E getMax(BSTNode<E> node) {
+    	if (node == null) {
+    		return null;
+    	} else if (node.right == null) {
+    		return node.data;
+    	} else {
+    		return getMax(node.right);
+    	}
     	
     }
     
     
-    private E getMax() {
-		return null;
-    	
-    }
-    
-    
-    
-    
-    
-    private static class Iterator<E> {
+    public static class Iterator<E> {
     	private Stack<BSTNode<E>> stack;
     	public Iterator(BSTNode<E> node) {
-    		
+    		stack = new Stack<BSTNode<E>>();
+    		//push all left children accessible from the parameter node
+    		while(node != null) {
+    			stack.push(node);
+    			node = node.left;
+    		}
+    		//node with highest value will be on bottom of stack
+    		//when popping the nodes they will go from lowest to highest
     	}
     	
     	public boolean hasNext() {
-    		return false;
+    		return !stack.isEmpty();
     	}
     	
     	public E next() {
-    		return null;
+    		// lowest value node is presented
+    		BSTNode<E> node = stack.pop();
+    		E result = node.data;
+    		// the data of this node will be returned
+    		if (node.right != null) { // if the current node has a right node, 
+    			node = node.right; // the right node is now the current node
+    			while (node != null) { // while there are more right nodes, 
+    				stack.push(node); // push them to the stack
+    				node = node.left; // the current node is then the leftmost node
+    			}
+    		}
+    		return result;
+    		
     	}
     }
     
