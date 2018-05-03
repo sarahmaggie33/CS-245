@@ -84,7 +84,7 @@ public class HashMap<K, V> {
 
 	public void put(K key, V value) {
 		int bucket = hashFunction(key);
-		while (elementData[bucket] != null && !elementData[bucket].key.equals(key) && elementData[bucket] != REMOVED) { // linear probing																										
+		while (elementData[bucket] != null && elementData[bucket] != REMOVED && !elementData[bucket].key.equals(key) ) { // linear probing																										
 			bucket = (bucket + 1) % elementData.length;
 			System.out.println("bucket");
 		}
@@ -140,7 +140,7 @@ public class HashMap<K, V> {
 	}
 
 	private double loadFactor() {
-		return (double) size / MAX_LOAD_FACTOR;
+		return (double) size / elementData.length;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -153,10 +153,12 @@ public class HashMap<K, V> {
 		// re-add all of the old data into the new array
 		for (int i = 0; i < oldElementData.length; i++) {
 			HashEntry current = oldElementData[i];
-			while (current != null) {
-				put(current.getKey(), current.getValue());
+			if (current != null && current != REMOVED) {
+				put(current.key, current.value); 
 			}
 		}
+
+    
 	}
 
 }
