@@ -1,14 +1,9 @@
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
@@ -16,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
-class MaxHeapPriorityQueueTests {
+class Lab13Tests {
 	
 	private MaxHeapPriorityQueue<Integer> mhpq;
 	private Field elementData;
@@ -225,37 +220,6 @@ class MaxHeapPriorityQueueTests {
 	}
 	
 	@Test
-	public void testContains() {
-		try {
-			assertFalse("contains method is not working correctly", mhpq.contains(0));
-			
-			Integer[] data = {null,10,9,7,8,4,2,4,3,5,1,11,null,null,null,null,null,null,null,null};
-			elementData.set(mhpq, data);
-			size.set(mhpq, 10);
-			
-			assertTrue("contains method is not working correctly", mhpq.contains(10));
-			assertTrue("contains method is not working correctly", mhpq.contains(9));
-			assertTrue("contains method is not working correctly", mhpq.contains(7));
-			assertTrue("contains method is not working correctly", mhpq.contains(8));
-			assertTrue("contains method is not working correctly", mhpq.contains(4));
-			assertTrue("contains method is not working correctly", mhpq.contains(2));
-			assertTrue("contains method is not working correctly", mhpq.contains(3));
-			assertTrue("contains method is not working correctly", mhpq.contains(5));
-			assertTrue("contains method is not working correctly", mhpq.contains(1));
-			assertFalse("contains method is not working correctly", mhpq.contains(11));
-			assertArrayEquals("contains method is not working correctly", (Comparable[])elementData.get(mhpq), data);
-			assertEquals("contains method is not working correctly", size.get(mhpq), 10);
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			String sStackTrace = sw.toString(); // stack trace as a string
-			System.out.println(sStackTrace);
-			fail("contains method is not working correctly");
-		}
-	}
-	
-	@Test
 	public void testToString() {
 		try {
 			assertEquals("toString method is not working correctly", mhpq.toString(), "[]");
@@ -296,120 +260,7 @@ class MaxHeapPriorityQueueTests {
 			Integer[] a3 = {8,6,7,5,4,3,2,1,0};
 			assertArrayEquals("toArray method is not working correctly", mhpq.toArray(), a3);
 		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			String sStackTrace = sw.toString(); // stack trace as a string
-			System.out.println(sStackTrace);
 			fail("toArray method is not working correctly");
-		}
-	}
-	
-	@Test
-	public void testIterator() {
-		try {
-			Iterator<Integer> itr = mhpq.iterator();
-			assertFalse("your iterator is not working correctly",itr.hasNext());
-			
-			size.set(mhpq, 1);
-			Random r = new Random();
-			Integer randVal = r.nextInt(10);
-			Integer[] data2 = {null,randVal,null,null,null,null,null,null,null,null};
-			elementData.set(mhpq, data2);
-			itr = mhpq.iterator();
-			assertTrue("your iterator is not working correctly",itr.hasNext());
-			assertEquals("your iterator is not working correctly", itr.next(), new Integer(randVal));
-			assertFalse("your iterator is not working correctly",itr.hasNext());
-			
-			size.set(mhpq, 9);
-			Integer[] data = {null,8,7,6,5,4,3,2,0,1};
-			elementData.set(mhpq, data);
-			itr = mhpq.iterator();
-			for(int i=8; i>=2; --i) {
-				assertTrue("your iterator is not working correctly",itr.hasNext());
-				assertEquals("your iterator is not working correctly", itr.next(), new Integer(i));
-			}
-			assertTrue("your iterator is not working correctly",itr.hasNext());
-			assertEquals("your iterator is not working correctly", itr.next(), new Integer(0));
-			assertTrue("your iterator is not working correctly",itr.hasNext());
-			assertEquals("your iterator is not working correctly", itr.next(), new Integer(1));
-			assertFalse("your iterator is not working correctly",itr.hasNext());
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			String sStackTrace = sw.toString(); // stack trace as a string
-			System.out.println(sStackTrace);
-			fail("your iterator is not working correctly");
-		}
-	}
-	
-	@Test
-	public void testHeapSort() {
-		try {
-			Integer[] a = new Integer[0];
-			MaxHeapPriorityQueue.heapSort(a, 0);
-			assertArrayEquals("heapSort method is not working correctly", new Integer[0], a);
-			
-			Integer[] a1 = {5};
-			Integer[] a1s = {5};
-			MaxHeapPriorityQueue.heapSort(a1, 1);
-			assertArrayEquals("heapSort method is not working correctly", a1s, a1);
-			
-			Integer[] a2 = {5,3};
-			Integer[] a2s = {3,5};
-			MaxHeapPriorityQueue.heapSort(a2, 2);
-			assertArrayEquals("heapSort method is not working correctly", a2s, a2);
-			
-			Integer[] a3 = {5,3,2};
-			Integer[] a3s = {2,3,5};
-			MaxHeapPriorityQueue.heapSort(a3, 3);
-			assertArrayEquals("heapSort method is not working correctly", a3s, a3);
-			
-			Integer[] a4 = {5,3,2,7};
-			Integer[] a4s = {2,3,5,7};
-			MaxHeapPriorityQueue.heapSort(a4, 4);
-			assertArrayEquals("heapSort method is not working correctly", a4s, a4);
-			
-			Integer[] a5 = {5,3,2,7,4};
-			Integer[] a5s = {2,3,4,5,7};
-			MaxHeapPriorityQueue.heapSort(a5, 5);
-			assertArrayEquals("heapSort method is not working correctly", a5s, a5);
-			
-			Integer[] a6 = {5,3,2,7,4,4};
-			Integer[] a6s = {2,3,4,4,5,7};
-			MaxHeapPriorityQueue.heapSort(a6, 6);
-			assertArrayEquals("heapSort method is not working correctly", a6s, a6);
-			
-			Integer[] a7 = {5,3,2,7,4,4,8};
-			Integer[] a7s = {2,3,4,4,5,7,8};
-			MaxHeapPriorityQueue.heapSort(a7, 7);
-			assertArrayEquals("heapSort method is not working correctly", a7s, a7);
-			
-			Integer[] a8 = {5,3,2,7,4,4,8,10};
-			Integer[] a8s = {2,3,4,4,5,7,8,10};
-			MaxHeapPriorityQueue.heapSort(a8, 8);
-			assertArrayEquals("heapSort method is not working correctly", a8s, a8);
-			
-			Integer[] a9 = {5,3,2,7,4,4,8,10,9};
-			Integer[] a9s = {2,3,4,4,5,7,8,9,10};
-			MaxHeapPriorityQueue.heapSort(a9, 9);
-			assertArrayEquals("heapSort method is not working correctly", a9s, a9);
-			
-			Integer[] a10 = {5,3,2,7,4,4,8,10,9,1};
-			Integer[] a10s = {1,2,3,4,4,5,7,8,9,10};
-			MaxHeapPriorityQueue.heapSort(a10, 10);
-			assertArrayEquals("heapSort method is not working correctly", a10s, a10);
-			
-			Random r = new Random();
-			int randVal = r.nextInt(10);
-			Integer[] a102 = {5,3,2,7,4,4,8,10,9,1,randVal};
-			Integer[] a102s = {1,2,3,4,4,5,7,8,9,10,randVal};
-			MaxHeapPriorityQueue.heapSort(a102, 10);
-			assertArrayEquals("heapSort method is not working correctly", a102s, a102);
-
-		} catch (Exception e) {
-			fail("heapSort method is not working correctly");
 		}
 	}
 }
